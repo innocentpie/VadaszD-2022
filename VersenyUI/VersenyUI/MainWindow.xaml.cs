@@ -17,6 +17,9 @@ namespace VersenyUI
 {
     public partial class MainWindow : Window
     {
+
+        public List<string> dobasok = new List<string>();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -28,56 +31,74 @@ namespace VersenyUI
             playButton.SetValue(Grid.ColumnProperty, 1);
             playButton.Click += new RoutedEventHandler(StartGame);
             mainGrid.Children.Add(playButton);
+            dobasok.Add("asdasdasd");
+            dobasok.Add("asdasd");
+            dobasok.Add("asda");
+            dobasok.Add("asddasd");
         }
         private void StartGame(System.Object sender, RoutedEventArgs e)
         {
             mainGrid.Children.Clear();
+            mainGrid.RowDefinitions.Clear();
+            mainGrid.ColumnDefinitions.Clear();
             Grid gameGrid = new Grid();
-            gameGrid.SetValue(Grid.ColumnSpanProperty, 3);
-            gameGrid.SetValue(Grid.RowSpanProperty, 2);
             gameGrid.Background = new SolidColorBrush(Colors.White);
             gameGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
-            gameGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
-            gameGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
-            gameGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
-            gameGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
-            gameGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(10, GridUnitType.Star) });
-            gameGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(15, GridUnitType.Star) });
-            gameGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(60, GridUnitType.Star) });
-            gameGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(15, GridUnitType.Star) });
+            gameGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(2, GridUnitType.Star) });
+            gameGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
+            gameGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
 
+            gameGrid.Children.Add(addTableGrid());
+            //gameGrid.Children.Add(addViewPort());
+            //gameGrid.Children.Add(addPlayerScores());
+
+            mainGrid.Children.Add(gameGrid);
+        }
+
+        private UIElement addPlayerScores()
+        {
+            throw new NotImplementedException();
+        }
+
+        private UIElement addViewPort()
+        {
+            throw new NotImplementedException();
+        }
+
+        private Grid addTableGrid()
+        {
+            Grid grid = new Grid();
+
+            grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(4, GridUnitType.Star) });
+            grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
             Random random = new Random();
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < dobasok.Count; i++)
             {
+                grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
                 Button button = new Button();
-                button.Margin = new Thickness(10);
+                button.Margin = new Thickness(2);
                 button.MinHeight = 10;
                 button.MinWidth = 10;
                 button.Content = random.Next(1, 7);
                 button.SetValue(Grid.RowProperty, i);
-                button.SetValue(Grid.ColumnProperty, 0);
-                gameGrid.Children.Add(button);
+                button.SetValue(Grid.ColumnProperty, 1);
+                grid.Children.Add(button);
             }
 
-            DataGrid table = new DataGrid();
-            table.Background = Brushes.White;
-            table.SetValue(Grid.RowProperty, 1);
-            table.SetValue(Grid.RowSpanProperty, 3);
-            table.SetValue(Grid.ColumnProperty, 2);
-            gameGrid.Children.Add(table);
+            DataGrid dataGrid = new DataGrid();
+
+            dataGrid.ItemsSource = null;
+            dataGrid.Items.Refresh();
+            dataGrid.Margin = new Thickness(20);
+            dataGrid.SetValue(Grid.RowSpanProperty, dobasok.Count);
 
 
-            mainGrid.Children.Add(gameGrid);
-            ASDA.xdddddddd(10);
+            grid.Background = new SolidColorBrush(Colors.Blue);
 
-            ASD();
-        }
+            grid.Children.Add(dataGrid);
+            grid.SetValue(Grid.RowProperty, 1);
 
-
-        private void ASD()
-        {
-            MessageBox.Show("XD");
-            
+            return grid;
         }
     }
 }
