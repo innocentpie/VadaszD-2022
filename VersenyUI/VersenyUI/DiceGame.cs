@@ -19,10 +19,20 @@ namespace VersenyUI
             new Field("Nagy póker", 5, FieldPredicates.NagyPóker, 50)
         };
 
-        public Field[][] PlayerStates = new Field[][]
+        public static Field[][] PlayerStates = new Field[][]
         {
             GameFields, 
             GameFields
         };
+
+        public static int[] ReturnApplicableFields(int playerIndex, int[] dice)
+        {
+            List<int> output = new List<int>();
+            for (int i = 0; i < GameFields.Length; i++)
+                if(PlayerStates[playerIndex][i].CheckCondition(dice))
+                    output.Add(i);
+
+            return output.ToArray();
+        }
     }
 }

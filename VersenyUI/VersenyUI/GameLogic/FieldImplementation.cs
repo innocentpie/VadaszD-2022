@@ -22,7 +22,7 @@ namespace VersenyUI
 
         protected Predicate<int[]> CheckConditionPredicate;
         
-        protected bool CheckCondition(int[] dice)
+        public bool CheckCondition(int[] dice)
         {
             if (dice.Length != NumberOfDice)
                 return false;
