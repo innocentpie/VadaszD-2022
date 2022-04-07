@@ -6,7 +6,7 @@ namespace VersenyUI
 {
     public class DiceGame
     {
-        public Field[] GameFields = new Field[] 
+        public static Field[] GameFields = new Field[] 
         { 
             new Field("Szemét", 5),
             new Field("Pár", 2, FieldPredicates.Pár),
@@ -17,6 +17,12 @@ namespace VersenyUI
             new Field("Kis sor", 5, FieldPredicates.KisSor, 15),
             new Field("Nagy sor", 5, FieldPredicates.NagySor, 20),
             new Field("Nagy póker", 5, FieldPredicates.NagyPóker, 50)
+        };
+
+        public Field[][] PlayerStates = new Field[][]
+        {
+            GameFields, 
+            GameFields
         };
     }
 }
