@@ -56,6 +56,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="DiceGame.cs" />
+    <Compile Include="DiceVisual\DiceVisual.cs" />
     <Compile Include="GameLogic\FieldImplementation.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
