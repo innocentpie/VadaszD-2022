@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VersenyUI"
         mc:Ignorable="d"
-        Title="Kockajáték" MinHeight="480" Height="800" MinWidth="720" Width="1280" Background="White">
+        Title="Kockajáték" MinHeight="480" Height="795.5" MinWidth="720" Width="1280" Background="White">
     <Grid x:Name="mainGrid" Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="50*"/>
@@ -13,17 +13,86 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="40*"/>
-            <ColumnDefinition Width="20*"/>
+            <ColumnDefinition Width="10*"/>
             <ColumnDefinition Width="40*"/>
         </Grid.ColumnDefinitions>
+
+        <Button Click="RollDice" Content="Dobás" FontSize="20" Grid.Column="1" Margin="0,30,0,276"></Button>
         
-        <Viewport3D x:Name="viewport3D" Grid.ColumnSpan="3" Grid.RowSpan="1">
+        <Grid x:Name="playerGrid" Grid.Row="2" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Row="0" Grid.Column="0" Content="Szemét" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20"/>
+            <Label Grid.Row="1" Grid.Column="0" Content="Pár" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20"/>
+            <Label Grid.Row="2" Grid.Column="0" Content="Drill" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20"/>
+            <Label Grid.Row="3" Grid.Column="0" Content="Két pár" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20"/>
+            <Label Grid.Row="4" Grid.Column="0" Content="Kis póker" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20"/>
+            <Label Grid.Row="5" Grid.Column="0" Content="Full" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20"/>
+            <Label Grid.Row="6" Grid.Column="0" Content="Kis sor" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20"/>
+            <Label Grid.Row="7" Grid.Column="0" Content="Nagy sor" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20"/>
+            <Label Grid.Row="8" Grid.Column="0" Content="Nagy póker" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20"/>
+        </Grid>
+        <Grid x:Name="botGrid" Grid.Row="2" Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            
+            <Label Grid.Row="0" Grid.Column="0" Content="Szemét" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20"/>
+            <Label Grid.Row="1" Grid.Column="0" Content="Pár" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20"/>
+            <Label Grid.Row="2" Grid.Column="0" Content="Drill" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20"/>
+            <Label Grid.Row="3" Grid.Column="0" Content="Két pár" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20"/>
+            <Label Grid.Row="4" Grid.Column="0" Content="Kis póker" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20"/>
+            <Label Grid.Row="5" Grid.Column="0" Content="Full" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20"/>
+            <Label Grid.Row="6" Grid.Column="0" Content="Kis sor" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20"/>
+            <Label Grid.Row="7" Grid.Column="0" Content="Nagy sor" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20"/>
+            <Label Grid.Row="8" Grid.Column="0" Content="Nagy póker" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20"/>
+        </Grid>
+
+        <Viewport3D x:Name="viewport3D" Grid.ColumnSpan="3" Grid.RowSpan="1" RenderTransformOrigin="0.5,0" Margin="0,0,0,36">
             <Viewport3D.Camera>
-                <OrthographicCamera Width="10" Position="0, 0, 10" LookDirection="0, 0, -1"></OrthographicCamera>
+                <OrthographicCamera Width="1.2" Position="0, 0, 10" LookDirection="0, 0, -1"/>
             </Viewport3D.Camera>
             <ModelVisual3D>
                 <ModelVisual3D.Content>
-                    <AmbientLight></AmbientLight>
+                    <AmbientLight/>
                 </ModelVisual3D.Content>
             </ModelVisual3D>
         </Viewport3D>

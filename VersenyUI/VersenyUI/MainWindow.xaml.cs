@@ -10,6 +10,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Media.Media3D;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
@@ -17,7 +18,12 @@ namespace VersenyUI
 {
     public partial class MainWindow : Window
     {
-        public Random random = new Random();
+        private const int ROLL_TIME_MS = 3000;
+        private const int ROLL360_COUNT_MAIN_AXIS = 4;
+        private const int ROLL360_COUNT_RANDOM_AXIS = 6;
+
+
+        public Random r = new Random();
         Player player = new Player();
         public List<Player> players = new List<Player>();
         public List<string> dobasTipusok = new List<string>(9);
@@ -36,11 +42,22 @@ namespace VersenyUI
         Grid tableGrid;
 
 
+        private DiceVisual[] playerDice;
+        private DiceVisual[] botDice;
+
+        private Label[][] playerDiceLabels;
+        private Label[][] botDiceLabels;
+
+        private Label[] playerFieldPointLabels;
+        private Label[] botFieldPointLabels;
 
         public MainWindow()
         {
             InitializeComponent();
 
+            InitializeDice(out playerDice, out botDice);
+            InitializeFieldGrid(playerGrid, out playerDiceLabels, out playerFieldPointLabels);
+            InitializeFieldGrid(botGrid, out botDiceLabels, out botFieldPointLabels);
 
             /*this.Width = Math.Round(SystemParameters.FullPrimaryScreenWidth * 0.665);
             this.Height = Math.Round(SystemParameters.FullPrimaryScreenHeight * 0.665);
@@ -64,6 +81,157 @@ namespace VersenyUI
             dobasTipusok.Add("Nagy sor");
             dobasTipusok.Add("Nagy póker");*/
         }
+
+        private void InitializeFieldGrid(Grid grid, out Label[][] diceValues, out Label[] fieldResultLabels)
+        {
+            diceValues = new Label[9][];
+            fieldResultLabels = new Label[9];
+
+            for (int i = 0; i < 9; i++)
+            {
+                Label label = new Label();
+                label.FontSize = 20;
+                grid.Children.Add(label);
+                Grid.SetRow(label, i);
+                Grid.SetColumn(label, 6);
+                fieldResultLabels[i] = label;
+
+                diceValues[i] = new Label[5];
+                for (int j = 0; j < 5; j++)
+                {
+                    Label rollLabel = new Label();
+                    rollLabel.FontSize = 20;
+                    grid.Children.Add(rollLabel);
+                    Grid.SetRow(rollLabel, i);
+                    Grid.SetColumn(rollLabel, j + 1);
+                    diceValues[i][j] = rollLabel;
+                }
+            }
+        }
+
+        private void ShowButtonsForApplicable(int[] rolls, int playerIdx)
+        {
+            var grid = playerIdx == 0 ? playerGrid : botGrid;
+            var applicable = DiceGame.ReturnApplicableFieldsCombinations(playerIdx, rolls);
+            var rollsCopy = new int[rolls.Length];
+            rolls.CopyTo(rollsCopy, 0);
+
+            List<Button> thisRoundButtons = new List<Button>();
+            foreach (var item in applicable)
+            {
+                var btn = new Button();
+                grid.Children.Add(btn);
+                thisRoundButtons.Add(btn);
+                btn.Content = "Rögzít";
+                Grid.SetRow(btn, item);
+                Grid.SetColumn(btn, 7);
+
+                btn.Click += (s, e) =>
+                {
+                    DiceGame.PlayerStates[playerIdx][item].AssignValuesBestCombination(rollsCopy);
+                    SetRollLabels(playerIdx, rollsCopy, item);
+                    DeleteRoundButtons();
+
+                    void DeleteRoundButtons()
+                    {
+                        for (int i = 0; i < thisRoundButtons.Count; i++)
+                        {
+                            var bt = thisRoundButtons[i];
+                            grid.Children.Remove(bt);
+                            bt = null;
+                        }
+                    }
+                };
+            }
+        }
+
+        private void SetRollLabels(int playerIdx, int[] rolls, int fieldIdx)
+        {
+            Label[] labelRow = (playerIdx == 0 ? playerDiceLabels : botDiceLabels)[fieldIdx];
+            var field = DiceGame.PlayerStates[playerIdx][fieldIdx];
+            var diceVals = field.DiceValues;
+            for (int i = 0; i < diceVals.Length; i++)
+            {
+                labelRow[i].Content = diceVals[i].ToString();
+            }
+
+            Label labelPoint = (playerIdx == 0 ? playerFieldPointLabels : botFieldPointLabels)[fieldIdx];
+            labelPoint.Content = field.Points.ToString();
+
+        }
+
+        private async void RollDice(object sender, EventArgs e)
+        {
+            var playerRolls = new int[] { r.Next(1, 7), r.Next(1, 7), r.Next(1, 7), r.Next(1, 7), r.Next(1, 7) };
+            var botRolls = new int[] { r.Next(1, 7), r.Next(1, 7), r.Next(1, 7), r.Next(1, 7), r.Next(1, 7) };
+
+            Task[] tasks = new Task[]
+            {
+                RollBotDice(playerRolls),
+                RollPlayerDice(botRolls)
+            };
+            await Task.WhenAll(tasks);
+
+            ShowButtonsForApplicable(playerRolls, 1);
+            ShowButtonsForApplicable(botRolls, 0);
+        }
+
+        /// <summary>
+        /// Initiates the dice visuals
+        /// <br>
+        /// Call when initializing window
+        /// </summary>
+        private void InitializeDice(out DiceVisual[] playerDice, out DiceVisual[] botDice)
+        {
+            Vector3D scale = new Vector3D(.085, .085, .085);
+            playerDice = new DiceVisual[]
+            {
+                new DiceVisual(viewport3D, new Vector3D(-.4, .05, 0), scale),
+                new DiceVisual(viewport3D, new Vector3D(-.2, .05, 0), scale),
+                new DiceVisual(viewport3D, new Vector3D(-.5, -.05, 0), scale),
+                new DiceVisual(viewport3D, new Vector3D(-.3, -.05, 0), scale),
+                new DiceVisual(viewport3D, new Vector3D(-.1, -.05, 0), scale)
+            };
+
+            botDice = new DiceVisual[]
+            {
+                new DiceVisual(viewport3D, new Vector3D(.2, .05, 0), scale),
+                new DiceVisual(viewport3D, new Vector3D(.4, .05, 0), scale),
+                new DiceVisual(viewport3D, new Vector3D(.1, -.05, 0), scale),
+                new DiceVisual(viewport3D, new Vector3D(.3, -.05, 0), scale),
+                new DiceVisual(viewport3D, new Vector3D(.5, -.05, 0), scale)
+            };
+        }
+
+        /// <summary>
+        /// Rolls the player's dice
+        /// </summary>
+        /// <param name="results">The desired sides on the dice</param>
+        private async Task RollPlayerDice(int[] results)
+        {
+            List<Task> rolls = new List<Task>();
+            for (int i = 0; i < playerDice.Length; i++)
+            {
+                rolls.Add(playerDice[i].RollToAnimate(results[i], ROLL_TIME_MS, ROLL360_COUNT_MAIN_AXIS, ROLL360_COUNT_RANDOM_AXIS));
+            }
+            await Task.WhenAll(rolls);
+        }
+
+        /// <summary>
+        /// Rolls the bot's dice
+        /// </summary>
+        /// <param name="results">The desired sides on the dice</param>
+        private async Task RollBotDice(int[] results)
+        {
+            List<Task> rolls = new List<Task>();
+            for (int i = 0; i < botDice.Length; i++)
+            {
+                rolls.Add(botDice[i].RollToAnimate(results[i], ROLL_TIME_MS, ROLL360_COUNT_MAIN_AXIS, ROLL360_COUNT_RANDOM_AXIS));
+            }
+            await Task.WhenAll(rolls);
+        }
+
+
         private void StartGame(System.Object sender, RoutedEventArgs e)
         {
             mainGrid.Children.Clear();
@@ -95,7 +263,7 @@ namespace VersenyUI
             Border border = new Border();
             border.Background = new SolidColorBrush(Colors.White);
 
-            border.CornerRadius = new CornerRadius(0,0,6,6);
+            border.CornerRadius = new CornerRadius(0, 0, 6, 6);
 
             Label scoreTable = new Label();
             scoreTable.FontSize = 18;
@@ -103,7 +271,7 @@ namespace VersenyUI
             border.VerticalAlignment = VerticalAlignment.Center;
             for (int i = 0; i < players.Count; i++)
             {
-                scoreTable.Content += i == players.Count-1 ? $"{players[i].Name}" : $"{players[i].Name} vs ";
+                scoreTable.Content += i == players.Count - 1 ? $"{players[i].Name}" : $"{players[i].Name} vs ";
             }
 
             border.Child = scoreTable;
@@ -127,7 +295,7 @@ namespace VersenyUI
 
         private void DiceButton_Click(object sender, RoutedEventArgs e)
         {
-            theDice = random.Next(1, 7);
+            theDice = r.Next(1, 7);
             MessageBox.Show($"The Dice: {theDice}");
         }
 
@@ -172,13 +340,13 @@ namespace VersenyUI
                 {
                     Label label2 = new Label();
                     label2.Content = players[j].dices[i];
-                    label2.SetValue(Grid.ColumnProperty, j+1);
+                    label2.SetValue(Grid.ColumnProperty, j + 1);
                     label2.SetValue(Grid.RowProperty, i + 1);
                     label2.VerticalAlignment = VerticalAlignment.Center;
                     label2.HorizontalAlignment = HorizontalAlignment.Center;
                     grid.Children.Add(label2);
                 }
-                
+
                 // Gombok a táblába való betételhez
                 Button button = new Button();
                 button.Margin = new Thickness(5);
@@ -186,7 +354,7 @@ namespace VersenyUI
                 button.MinWidth = 10;
                 button.Content = "Belerak";
                 button.SetValue(Grid.RowProperty, i + 1);
-                button.SetValue(Grid.ColumnProperty, players.Count+1);
+                button.SetValue(Grid.ColumnProperty, players.Count + 1);
                 button.Click += Button_Click;
                 buttons.Add(button);
                 grid.Children.Add(button);
@@ -199,8 +367,8 @@ namespace VersenyUI
         {
             Button button = sender as Button;
             if (theDice != 0)
-            { 
-                players[activePlayer].AddDice(theDice, Convert.ToInt32(button.GetValue(Grid.RowProperty))-1);
+            {
+                players[activePlayer].AddDice(theDice, Convert.ToInt32(button.GetValue(Grid.RowProperty)) - 1);
             }
             else
             {

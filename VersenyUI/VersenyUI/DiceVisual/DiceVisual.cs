@@ -6,42 +6,42 @@ using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using System.Windows;
 
-namespace VersenyUI.DiceVisual
+namespace VersenyUI
 {
     class DiceVisual
     {
         public static readonly Point3D[] baseVertices =
         {
             // front
-            new Point3D(-1, -1, 1),
-            new Point3D(1, -1, 1),
-            new Point3D(1, 1, 1),
-            new Point3D(-1, 1, 1),
+            new Point3D(-.5, -.5, .5),
+            new Point3D(.5, -.5, .5),
+            new Point3D(.5, .5, .5),
+            new Point3D(-.5, .5, .5),
             // back
-            new Point3D(-1, -1, -1),
-            new Point3D(1, -1, -1),
-            new Point3D(1, 1, -1),
-            new Point3D(-1, 1, -1),
+            new Point3D(-.5, -.5, -.5),
+            new Point3D(.5, -.5, -.5),
+            new Point3D(.5, .5, -.5),
+            new Point3D(-.5, .5, -.5),
             // down
-            new Point3D(-1, -1, -1),
-            new Point3D(1, -1, -1),
-            new Point3D(1, -1, 1),
-            new Point3D(-1, -1, 1),
+            new Point3D(-.5, -.5, -.5),
+            new Point3D(.5, -.5, -.5),
+            new Point3D(.5, -.5, .5),
+            new Point3D(-.5, -.5, .5),
             // up
-            new Point3D(-1, 1, -1),
-            new Point3D(1, 1, -1),
-            new Point3D(1, 1, 1),
-            new Point3D(-1, 1, 1),
+            new Point3D(-.5, .5, -.5),
+            new Point3D(.5, .5, -.5),
+            new Point3D(.5, .5, .5),
+            new Point3D(-.5, .5, .5),
             // left
-            new Point3D(-1, -1, -1),
-            new Point3D(-1, -1, 1),
-            new Point3D(-1, 1, 1),
-            new Point3D(-1, 1, -1),
+            new Point3D(-.5, -.5, -.5),
+            new Point3D(-.5, -.5, .5),
+            new Point3D(-.5, .5, .5),
+            new Point3D(-.5, .5, -.5),
             // right
-            new Point3D(1, -1, -1),
-            new Point3D(1, -1, 1),
-            new Point3D(1, 1, 1),
-            new Point3D(1, 1, -1),
+            new Point3D(.5, -.5, -.5),
+            new Point3D(.5, -.5, .5),
+            new Point3D(.5, .5, .5),
+            new Point3D(.5, .5, -.5),
 
         };
         public static readonly Point[] baseUVs =
@@ -190,7 +190,7 @@ namespace VersenyUI.DiceVisual
         }
         private Quaternion rotation;
 
-        public DiceVisual(Viewport3D vp, Vector3D position, Quaternion rotation, Vector3D scale)
+        public DiceVisual(Viewport3D vp, Vector3D position, Vector3D scale)
         {
             mesh = new MeshGeometry3D();
             mesh.Positions = new Point3DCollection(baseVertices);
@@ -199,13 +199,12 @@ namespace VersenyUI.DiceVisual
             mesh.TriangleIndices = new Int32Collection(baseIndicies);
 
             Matrix3D transformMatrix = Matrix3D.Identity;
-            transformMatrix.Translate(position);
-            transformMatrix.Rotate(rotation);
             transformMatrix.Scale(scale);
+            transformMatrix.Translate(position);
             transform = new MatrixTransform3D(transformMatrix);
 
             this.position = position;
-            this.rotation = rotation;
+            this.rotation = Quaternion.Identity;
             this.scale = scale;
 
             ImageBrush brush = new ImageBrush();
@@ -229,9 +228,9 @@ namespace VersenyUI.DiceVisual
             this.position = position;
 
             Matrix3D transformMatrix = Matrix3D.Identity;
-            transformMatrix.Translate(position);
             transformMatrix.Rotate(rotation);
             transformMatrix.Scale(scale);
+            transformMatrix.Translate(position);
             transform.Matrix = transformMatrix;
         }
 
@@ -240,9 +239,9 @@ namespace VersenyUI.DiceVisual
             this.scale = scale;
 
             Matrix3D transformMatrix = Matrix3D.Identity;
-            transformMatrix.Translate(position);
             transformMatrix.Rotate(rotation);
             transformMatrix.Scale(scale);
+            transformMatrix.Translate(position);
             transform.Matrix = transformMatrix;
         }
 
@@ -251,14 +250,14 @@ namespace VersenyUI.DiceVisual
             this.rotation = rotation;
 
             Matrix3D transformMatrix = Matrix3D.Identity;
-            transformMatrix.Translate(position);
             transformMatrix.Rotate(rotation);
             transformMatrix.Scale(scale);
+            transformMatrix.Translate(position);
             transform.Matrix = transformMatrix;
         }
 
         private const int stepIntervalMs = 10;
-        public async void RollToAnimate(int side, int timeFullMs, int toTargetRotationCount, int randomizedRotationCount)
+        public async Task RollToAnimate(int side, int timeFullMs, int toTargetRotationCount, int randomizedRotationCount)
         {
             int fullRotCount = toTargetRotationCount;
             int localRotCount = randomizedRotationCount;

@@ -9,7 +9,7 @@ namespace VersenyUI
     {
         public string Name { get; protected set; } //The name of the field.
         protected int NumberOfDice; //Expected number of dice in this field.
-        protected int[] DiceValues { get; set; } //The dice that were given to this field.
+        public int[] DiceValues { get; set; } //The dice that were given to this field.
 
         public int Points => //The number of points this field is worth.
             overriddenPointValue == null 
@@ -22,6 +22,16 @@ namespace VersenyUI
 
         protected Predicate<int[]> CheckConditionPredicate;
         
+        public int WouldBePoints(int[] dice)
+        {
+            if (!CheckCondition(dice))
+                return 0;
+
+            return overriddenPointValue == null
+            ? dice.Sum()
+            : (int)overriddenPointValue;
+        }
+
         public bool CheckCondition(int[] dice)
         {
             if (dice.Length != NumberOfDice)
@@ -33,6 +43,20 @@ namespace VersenyUI
             return CheckConditionPredicate.Invoke(dice);
         }
 
+        public bool CheckConditionCombinations(int[] dice)
+        {
+            if (CheckConditionPredicate == null)
+                return true;
+
+            var combs = dice.CombinationsWithoutRepetition(NumberOfDice);
+            foreach (var item in combs)
+            {
+                if (CheckCondition(item.ToArray()))
+                    return true;
+            }
+            return false;
+        }
+
         public bool AssignValues(int[] _dice)
         {
             if(!CheckCondition(_dice))
@@ -42,12 +66,35 @@ namespace VersenyUI
             return true;
         }
 
+        public bool AssignValuesBestCombination(int[] _dice)
+        {
+            var combs = _dice.CombinationsWithoutRepetition(NumberOfDice);
+            int[] best = combs.OrderByDescending(y => WouldBePoints(y.ToArray())).First().ToArray();
+
+            if (WouldBePoints(best) == 0)
+                return false;
+
+            DiceValues = best;
+            return true;
+        }
+
         public Field(string _name, int _numberOfDice, Predicate<int[]> _checkConditionPredicate = null, int? _overriddenPointValue = null)
         {
             Name = _name;
             CheckConditionPredicate = _checkConditionPredicate;
             NumberOfDice = _numberOfDice;
             overriddenPointValue = _overriddenPointValue;
+        }
+    }
+    public static class LinqExtension
+    {
+        public static IEnumerable<IEnumerable<T>> CombinationsWithoutRepetition<T>(this IEnumerable<T> items, int ofLength)
+        {
+            return (ofLength == 1) ?
+                items.Select(item => new[] { item }) :
+                items.SelectMany((item, i) => items.Skip(i + 1)
+                                                   .CombinationsWithoutRepetition(ofLength - 1)
+                                                   .Select(result => new T[] { item }.Concat(result)));
         }
     }
     public static class FieldPredicates
