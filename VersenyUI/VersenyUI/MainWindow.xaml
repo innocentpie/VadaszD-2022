@@ -5,11 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VersenyUI"
         mc:Ignorable="d"
-        Title="Kockajáték" MinHeight="480" Height="800" MinWidth="720" Width="1280" Background="#26A96C">
+        Title="Kockajáték" MinHeight="480" Height="800" MinWidth="720" Width="1280" Background="White">
     <Grid x:Name="mainGrid" Margin="20">
         <Grid.RowDefinitions>
-            <RowDefinition Height="90*"/>
-            <RowDefinition Height="10*"/>
+            <RowDefinition Height="50*"/>
+            <RowDefinition Height="50*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="40*"/>
