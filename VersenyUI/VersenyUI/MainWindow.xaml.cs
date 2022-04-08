@@ -111,8 +111,10 @@ namespace VersenyUI
 
         private void ShowButtonsForApplicable(int[] rolls, int playerIdx)
         {
+            bool zeroed = false;
+
             var grid = playerIdx == 0 ? playerGrid : botGrid;
-            var applicable = DiceGame.ReturnApplicableFieldsCombinations(playerIdx, rolls);
+            var applicable = DiceGame.ReturnApplicableFieldsCombinations(playerIdx, rolls, out zeroed);
             var rollsCopy = new int[rolls.Length];
             rolls.CopyTo(rollsCopy, 0);
 
@@ -128,7 +130,10 @@ namespace VersenyUI
 
                 btn.Click += (s, e) =>
                 {
-                    DiceGame.PlayerStates[playerIdx][item].AssignValuesBestCombination(rollsCopy);
+                    if (!zeroed)
+                        DiceGame.PlayerStates[playerIdx][item].AssignValuesBestCombination(rollsCopy);
+                    else
+                        DiceGame.PlayerStates[playerIdx][item].AssignAllZero();
                     SetRollLabels(playerIdx, rollsCopy, item);
                     DeleteRoundButtons();
 

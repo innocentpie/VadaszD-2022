@@ -35,12 +35,20 @@ namespace VersenyUI
             return output.ToArray();
         }
 
-        public static int[] ReturnApplicableFieldsCombinations(int playerIndex, int[] dice)
+        public static int[] ReturnApplicableFieldsCombinations(int playerIndex, int[] dice, out bool zeroed)
         {
             List<int> output = new List<int>();
             for (int i = 0; i < GameFields.Length; i++)
                 if (PlayerStates[playerIndex][i].CheckConditionCombinations(dice) && PlayerStates[playerIndex][i].DiceValues == null)
                     output.Add(i);
+            zeroed = false;
+            if (output.Count == 0)
+            {
+                zeroed = true;
+                for (int i = 0; i < GameFields.Length; i++)
+                    if (PlayerStates[playerIndex][i].DiceValues == null)
+                        output.Add(i);
+            }
 
             return output.ToArray();
         }

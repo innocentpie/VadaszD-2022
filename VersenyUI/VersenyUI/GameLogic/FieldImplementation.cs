@@ -4,24 +4,35 @@ using System.Windows;
 using System.Collections.Generic;
 
 namespace VersenyUI
-{    
+{
     public class Field
     {
         public string Name { get; protected set; } //The name of the field.
         protected int NumberOfDice; //Expected number of dice in this field.
         public int[] DiceValues { get; set; } //The dice that were given to this field.
 
-        public int Points => //The number of points this field is worth.
-            overriddenPointValue == null 
-            ? DiceValues.Sum() 
-            : (int)overriddenPointValue;
+        public int Points //The number of points this field is worth.
+        {
+            get
+            {
+                if (DiceValues == null)
+                    return 0;
 
-        
+                if (DiceValues.Sum() == 0)
+                    return 0;
+
+                return overriddenPointValue == null
+                ? DiceValues.Sum()
+                : (int)overriddenPointValue;
+            }
+        }
+
+
         int? overriddenPointValue = null; //Contains the point value that the Field was given.
         //If left null, the point value will just be the sum of all given dice values.
 
         protected Predicate<int[]> CheckConditionPredicate;
-        
+
         public int WouldBePoints(int[] dice)
         {
             if (!CheckCondition(dice))
@@ -59,11 +70,16 @@ namespace VersenyUI
 
         public bool AssignValues(int[] _dice)
         {
-            if(!CheckCondition(_dice))
+            if (!CheckCondition(_dice))
                 return false;
 
             DiceValues = _dice;
             return true;
+        }
+
+        public void AssignAllZero()
+        {
+            DiceValues = new int[NumberOfDice];
         }
 
         public bool AssignValuesBestCombination(int[] _dice)
@@ -115,7 +131,7 @@ namespace VersenyUI
                     sorted.Count(x => sorted[0] == x) == 2 &&
                     sorted.Count(x => sorted[2] == x) == 2;
             };
-        
+
         public static Predicate<int[]> KisPóker =
             dice => dice.Count(x => x == dice[0]) == 4;
 
