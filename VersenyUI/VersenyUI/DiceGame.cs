@@ -6,8 +6,8 @@ namespace VersenyUI
 {
     public class DiceGame
     {
-        public static Field[] GameFields = new Field[] 
-        { 
+        public static Field[] InstantiateGameFields => new Field[]
+        {
             new Field("Szemét", 5),
             new Field("Pár", 2, FieldPredicates.Pár),
             new Field("Drill", 3, FieldPredicates.Drill),
@@ -21,14 +21,23 @@ namespace VersenyUI
 
         public static Field[][] PlayerStates = new Field[][]
         {
-            GameFields, 
-            GameFields
+            InstantiateGameFields, 
+            InstantiateGameFields
         };
+
+        public static void Restart()
+        {
+            PlayerStates = new Field[][]
+            {
+                InstantiateGameFields,
+                InstantiateGameFields
+            };
+        }
 
         public static int[] ReturnApplicableFields(int playerIndex, int[] dice)
         {
             List<int> output = new List<int>();
-            for (int i = 0; i < GameFields.Length; i++)
+            for (int i = 0; i < PlayerStates[0].Length; i++)
                 if(PlayerStates[playerIndex][i].CheckCondition(dice))
                     output.Add(i);
 
@@ -38,14 +47,16 @@ namespace VersenyUI
         public static int[] ReturnApplicableFieldsCombinations(int playerIndex, int[] dice, out bool zeroed)
         {
             List<int> output = new List<int>();
-            for (int i = 0; i < GameFields.Length; i++)
+            for (int i = 0; i < PlayerStates[0].Length; i++)
                 if (PlayerStates[playerIndex][i].CheckConditionCombinations(dice) && PlayerStates[playerIndex][i].DiceValues == null)
                     output.Add(i);
+                else if(PlayerStates[playerIndex][i].CheckConditionCombinations(dice))
+                    Console.WriteLine();
             zeroed = false;
             if (output.Count == 0)
             {
                 zeroed = true;
-                for (int i = 0; i < GameFields.Length; i++)
+                for (int i = 0; i < PlayerStates[0].Length; i++)
                     if (PlayerStates[playerIndex][i].DiceValues == null)
                         output.Add(i);
             }

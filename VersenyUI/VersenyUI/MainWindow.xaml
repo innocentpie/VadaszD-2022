@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VersenyUI"
         mc:Ignorable="d"
-        Title="Kockajáték" MinHeight="480" Height="795.5" MinWidth="720" Width="1280" Background="White">
+        Title="Kockajáték" MinHeight="480" Height="795.5" MinWidth="720" Width="1280" Background="#FFFFFF">
     <Grid x:Name="mainGrid" Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="50*"/>
@@ -13,12 +13,35 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="40*"/>
-            <ColumnDefinition Width="10*"/>
+            <ColumnDefinition Width="20*"/>
             <ColumnDefinition Width="40*"/>
         </Grid.ColumnDefinitions>
 
-        <Button Click="RollDice" Content="Dobás" FontSize="20" Grid.Column="1" Margin="0,30,0,276"></Button>
-        
+        <Grid Grid.Column="1" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+
+            <Label x:Name="finalPointTitle" Content="Végeredmény" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="ExtraBold" Visibility="Hidden"/>
+            <Label Grid.Row="1" x:Name="wonLabel" Visibility="Hidden" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold"/>
+            <Label x:Name="finalPointPlayerTitle" Grid.Row="2" Content="Te:" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" Visibility="Hidden"/>
+            <Label x:Name="playerFinalPointLabel" Grid.Row="3" Content="" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold"/>
+
+            <Label x:Name="finalPointAITitle" Grid.Row="5" Content="AI:" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" Visibility="Hidden"/>
+            <Label x:Name="botFinalPointLabel" Grid.Row="6" Content="" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold"/>
+        </Grid>
+
+        <Button x:Name="rollDiceButton" Visibility="Hidden" IsEnabled="False" Click="RollDice" Content="Dobás" FontSize="20" Grid.Column="1" Margin="0,30,0,276"></Button>
+        <Button x:Name="newGameButton" Visibility="Visible" IsEnabled="True" Click="NewGame" Content="Új játék" FontSize="20" Grid.Column="1" Margin="0,30,0,276"></Button>
+
         <Grid x:Name="playerGrid" Grid.Row="2" Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition/>
@@ -74,7 +97,7 @@
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
-            
+
             <Label Grid.Row="0" Grid.Column="0" Content="Szemét" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20"/>
             <Label Grid.Row="1" Grid.Column="0" Content="Pár" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20"/>
             <Label Grid.Row="2" Grid.Column="0" Content="Drill" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20"/>

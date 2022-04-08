@@ -94,6 +94,12 @@ namespace VersenyUI
             return true;
         }
 
+        public int WouldBePointsCombination(int[] dice)
+        {
+            var combs = dice.CombinationsWithoutRepetition(NumberOfDice);
+            return combs.Max(x => WouldBePoints(x.ToArray()));
+        }
+
         public Field(string _name, int _numberOfDice, Predicate<int[]> _checkConditionPredicate = null, int? _overriddenPointValue = null)
         {
             Name = _name;
