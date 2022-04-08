@@ -16,5 +16,16 @@
             <ColumnDefinition Width="20*"/>
             <ColumnDefinition Width="40*"/>
         </Grid.ColumnDefinitions>
+        
+        <Viewport3D x:Name="viewport3D" Grid.ColumnSpan="3" Grid.RowSpan="1">
+            <Viewport3D.Camera>
+                <OrthographicCamera Width="10" Position="0, 0, 10" LookDirection="0, 0, -1"></OrthographicCamera>
+            </Viewport3D.Camera>
+            <ModelVisual3D>
+                <ModelVisual3D.Content>
+                    <AmbientLight></AmbientLight>
+                </ModelVisual3D.Content>
+            </ModelVisual3D>
+        </Viewport3D>
     </Grid>
 </Window>

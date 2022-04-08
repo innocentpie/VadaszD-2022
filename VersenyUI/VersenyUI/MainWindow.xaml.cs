@@ -40,7 +40,9 @@ namespace VersenyUI
         public MainWindow()
         {
             InitializeComponent();
-            this.Width = Math.Round(SystemParameters.FullPrimaryScreenWidth * 0.665);
+
+
+            /*this.Width = Math.Round(SystemParameters.FullPrimaryScreenWidth * 0.665);
             this.Height = Math.Round(SystemParameters.FullPrimaryScreenHeight * 0.665);
             Button playButton = new Button();
             playButton.Content = "Játék";
@@ -60,7 +62,7 @@ namespace VersenyUI
             dobasTipusok.Add("Full");
             dobasTipusok.Add("Kis sor");
             dobasTipusok.Add("Nagy sor");
-            dobasTipusok.Add("Nagy póker");
+            dobasTipusok.Add("Nagy póker");*/
         }
         private void StartGame(System.Object sender, RoutedEventArgs e)
         {
