@@ -1,5 +1,5 @@
 # VadaszD-2022
-Enterprise implementation of a executive dice rolling simulator utilizing deep learning technology algortihm stacks
+Enterprise implementation of an executive dice rolling simulator utilizing deep learning technology algortihm stacks
 
 # Infrastructure illustration
 / Ezt a programtervet hoztuk létre, hogy megkönnyítse a kódolás folyamatát /<br>
